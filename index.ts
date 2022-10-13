@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import { register } from "./interfaces/register.interface";
 import { biodata } from "./interfaces/biodata.interface";
+import mongoose, { ConnectOptions } from "mongoose";
 
 
 dotenv.config();
@@ -11,6 +12,38 @@ const port = process.env.PORT;
 const BASE_URL: string = "/auth/v1";
 app.use(express.json());
 app.use(express.urlencoded());
+
+mongoose.connect('mongodb://localhost:27017/crypto-market',{
+    autoIndex: true,
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+} as ConnectOptions, () => {
+    console.log("Connected to database")
+});
+
+const userSchema = new mongoose.Schema({
+    username: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    password: {
+        type: String,
+        required: true,
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+});
+
+mongoose.model("UserCredentials",userSchema, "User-Credentials").create({
+    username: "yincoos01",
+    password: "Blessing091",
+    email: "yincoos@gmail.com",
+
+});
 
 app.get('/', (req: Request, res: Response) => {
     console.log(req.query)
